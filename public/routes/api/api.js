@@ -40,23 +40,27 @@ router.post('/notes', async (req, res) => {
 });
 router.delete('/notes/:id', async (req, res) => {
     try {
-        let userNotes = await fs.readFile('db/db.json', 'utf8', (err, data) => {
+        const userNotes = await fs.readFile('db/db.json', 'utf8', (err, data) => {
             if (err) {
                 console.log(err);
             }
             return (JSON.parse(data));
         });
-        const deleteNote = userNotes.forEach(note => {
+        const newList = JSON.parse(userNotes);
+        
+        newList.forEach(note => {
             if (note.id === req.params.id) {
-                let index = userNotes.indexOf(this);
-                userNotes.splice(index, 1);
+                let index = newList.indexOf(note);
+                newList.splice(index, 1);
             };
-        })
-        .then(() => fs.writeFile('db/db.json', JSON.stringify(userNotes)))
+        });
+
+        await fs.writeFile('db/db.json', JSON.stringify(newList));
     }
     catch (err) {
         if (err) throw err
     } 
+    res.redirect('/notes');
 });
 
 module.exports = router;
