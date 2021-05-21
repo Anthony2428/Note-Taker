@@ -25,10 +25,10 @@ router.post('/notes', async (req, res) => {
             }
             return (JSON.parse(data));
         });
-        JSON.parse(userNotes)
         const newNote = req.body;
         newNote.id = uid();
-        const newUserNotes = [userNotes, newNote];        
+        const newUserNotes = [].concat(JSON.parse(userNotes))
+        newUserNotes.push(newNote);        
 
         await fs.writeFile('db/db.json', JSON.stringify(newUserNotes))
 
